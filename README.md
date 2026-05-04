@@ -1,6 +1,6 @@
 # Final-Project-Brick-Breaker-Game
 
-🧠 Model (Game State & Logic)
+Model (Game State & Logic)
 Core State:
 Ball (position, velocity, direction)
 Paddle (position, width)
@@ -27,7 +27,7 @@ Loss Condition:
   Ball falls below paddle → lose a life
   Game ends when lives reach 0
 
-🎨 View (Rendering / UI)
+View (Rendering / UI)
 Window & Layout:
 Game area slightly smaller than full window
 Fixed size preferred (simple layout)
@@ -46,7 +46,7 @@ Pause overlay (text centered)
 Game Over screen (simple message)
 Optional level transition message
 
-🎮 Controller (Input & Game Flow)
+Controller (Input & Game Flow)
 Input Handling:
 Keyboard-based controls:
   Left Arrow → move paddle left (continuous)
