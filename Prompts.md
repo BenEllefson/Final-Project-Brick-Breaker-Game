@@ -100,3 +100,6 @@ These tests were all kept in the Model Tester and were ran through the terminal 
 
 This was easier to spot as it appeared in the terminal and was changed to allow the double value of 0 to count as well.
 
+Debugging prompt: 
+The ball is not bouncing off of the brick when a collision is supposed to happen and flying through the brick not registering, likely due to the models collision handling process. Reinforce those ideas and have a test in the Model tester reflect those changes.
+
