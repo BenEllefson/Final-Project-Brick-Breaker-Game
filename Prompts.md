@@ -93,3 +93,10 @@ Implementation Notes:
 - If method names differ slightly, adapt to the existing GameModel API
 
 Keep the code simple, readable, and focused on validating the model logic only.
+
+This created a BrickModelTester.java class in the project file and produced seven test suites for the project
+
+These tests were all kept in the Model Tester and were ran through the terminal immediately, these tests produced two that failed. This was centered around the test values of 0 and 0.0 not equaling.
+
+This was easier to spot as it appeared in the terminal and was changed to allow the double value of 0 to count as well.
+
