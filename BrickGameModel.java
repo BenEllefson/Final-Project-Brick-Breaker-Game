@@ -51,6 +51,8 @@ public class BrickGameModel {
     private final int windowWidth = 800;
     private final int windowHeight = 600;
     private final int paddleHeight = 12;
+    private final int ballRadius = 8;
+    private final double paddleY = windowHeight - 30;
 
     private Ball ball;
     private Paddle paddle;
@@ -66,7 +68,7 @@ public class BrickGameModel {
         currentLevel = 1;
         gameState = GameState.START;
         paddle = new Paddle(windowWidth / 2.0 - 60, 120);
-        ball = new Ball(windowWidth / 2.0, windowHeight - 40, 0, 0);
+        ball = new Ball(windowWidth / 2.0, paddleY - ballRadius, 0, 0);
         bricks = new ArrayList<>();
         generateLevel(currentLevel);
     }
@@ -76,8 +78,85 @@ public class BrickGameModel {
             return;
         }
 
+        double previousX = ball.position.x;
+        double previousY = ball.position.y;
+
         ball.position.x += ball.velocity.x;
         ball.position.y += ball.velocity.y;
+
+        handleWallCollisions();
+        handlePaddleCollision(previousY);
+        handleBrickCollisions(previousX, previousY);
+
+        if (ball.position.y - ballRadius > windowHeight) {
+            loseLife();
+        }
+    }
+
+    private void handleWallCollisions() {
+        if (ball.position.x - ballRadius <= 0) {
+            ball.position.x = ballRadius;
+            ball.velocity.x = Math.abs(ball.velocity.x);
+        } else if (ball.position.x + ballRadius >= windowWidth) {
+            ball.position.x = windowWidth - ballRadius;
+            ball.velocity.x = -Math.abs(ball.velocity.x);
+        }
+
+        if (ball.position.y - ballRadius <= 0) {
+            ball.position.y = ballRadius;
+            ball.velocity.y = Math.abs(ball.velocity.y);
+        }
+    }
+
+    private void handlePaddleCollision(double previousY) {
+        boolean ballCrossedPaddleTop = previousY + ballRadius <= paddleY
+                && ball.position.y + ballRadius >= paddleY;
+        boolean ballOverPaddle = ball.position.x >= paddle.x
+                && ball.position.x <= paddle.x + paddle.width;
+
+        if (ball.velocity.y > 0 && ballCrossedPaddleTop && ballOverPaddle) {
+            ball.position.y = paddleY - ballRadius;
+            ball.velocity.y = -Math.abs(ball.velocity.y);
+
+            double paddleCenter = paddle.x + paddle.width / 2.0;
+            double hitOffset = (ball.position.x - paddleCenter) / (paddle.width / 2.0);
+            ball.velocity.x = hitOffset * 5;
+        }
+    }
+
+    private void handleBrickCollisions(double previousX, double previousY) {
+        for (int i = 0; i < bricks.size(); i++) {
+            Brick brick = bricks.get(i);
+
+            if (ballIntersectsBrick(brick)) {
+                bricks.remove(i);
+                bounceOffBrick(brick, previousX, previousY);
+                checkLevelComplete();
+                return;
+            }
+        }
+    }
+
+    private boolean ballIntersectsBrick(Brick brick) {
+        return ball.position.x + ballRadius >= brick.x
+                && ball.position.x - ballRadius <= brick.x + brick.width
+                && ball.position.y + ballRadius >= brick.y
+                && ball.position.y - ballRadius <= brick.y + brick.height;
+    }
+
+    private void bounceOffBrick(Brick brick, double previousX, double previousY) {
+        boolean cameFromLeft = previousX + ballRadius <= brick.x;
+        boolean cameFromRight = previousX - ballRadius >= brick.x + brick.width;
+        boolean cameFromTop = previousY + ballRadius <= brick.y;
+        boolean cameFromBottom = previousY - ballRadius >= brick.y + brick.height;
+
+        if (cameFromLeft || cameFromRight) {
+            ball.velocity.x = -ball.velocity.x;
+        }
+
+        if (cameFromTop || cameFromBottom || (!cameFromLeft && !cameFromRight)) {
+            ball.velocity.y = -ball.velocity.y;
+        }
     }
 
     public void generateLevel(int level) {
@@ -97,7 +176,7 @@ public class BrickGameModel {
 
     public void resetBallToPaddle() {
         ball.position.x = paddle.x + paddle.width / 2.0;
-        ball.position.y = windowHeight - 45;
+        ball.position.y = paddleY - ballRadius;
         ball.velocity.x = 0;
         ball.velocity.y = 0;
         gameState = GameState.START;
@@ -143,7 +222,7 @@ public class BrickGameModel {
             gameState = GameState.LEVEL_COMPLETE;
         }
     }
-    
+
     public void clearBricks() {
         bricks.clear();
     }
@@ -154,6 +233,14 @@ public class BrickGameModel {
 
     public int getWindowHeight() {
         return windowHeight;
+    }
+
+    public int getBallRadius() {
+        return ballRadius;
+    }
+
+    public double getPaddleY() {
+        return paddleY;
     }
 
     public Ball getBall() {
