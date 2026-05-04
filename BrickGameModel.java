@@ -145,17 +145,44 @@ public class BrickGameModel {
     }
 
     private void bounceOffBrick(Brick brick, double previousX, double previousY) {
-        boolean cameFromLeft = previousX + ballRadius <= brick.x;
-        boolean cameFromRight = previousX - ballRadius >= brick.x + brick.width;
-        boolean cameFromTop = previousY + ballRadius <= brick.y;
-        boolean cameFromBottom = previousY - ballRadius >= brick.y + brick.height;
+        double ballLeft = ball.position.x - ballRadius;
+        double ballRight = ball.position.x + ballRadius;
+        double ballTop = ball.position.y - ballRadius;
+        double ballBottom = ball.position.y + ballRadius;
+        double brickRight = brick.x + brick.width;
+        double brickBottom = brick.y + brick.height;
 
-        if (cameFromLeft || cameFromRight) {
-            ball.velocity.x = -ball.velocity.x;
+        double overlapLeft = ballRight - brick.x;
+        double overlapRight = brickRight - ballLeft;
+        double overlapTop = ballBottom - brick.y;
+        double overlapBottom = brickBottom - ballTop;
+        double minHorizontalOverlap = Math.min(overlapLeft, overlapRight);
+        double minVerticalOverlap = Math.min(overlapTop, overlapBottom);
+
+        if (minHorizontalOverlap < minVerticalOverlap) {
+            bounceHorizontallyOffBrick(brick, previousX);
+        } else {
+            bounceVerticallyOffBrick(brick, previousY);
         }
+    }
 
-        if (cameFromTop || cameFromBottom || (!cameFromLeft && !cameFromRight)) {
-            ball.velocity.y = -ball.velocity.y;
+    private void bounceHorizontallyOffBrick(Brick brick, double previousX) {
+        if (previousX < brick.x) {
+            ball.position.x = brick.x - ballRadius;
+            ball.velocity.x = -Math.abs(ball.velocity.x);
+        } else {
+            ball.position.x = brick.x + brick.width + ballRadius;
+            ball.velocity.x = Math.abs(ball.velocity.x);
+        }
+    }
+
+    private void bounceVerticallyOffBrick(Brick brick, double previousY) {
+        if (previousY < brick.y) {
+            ball.position.y = brick.y - ballRadius;
+            ball.velocity.y = -Math.abs(ball.velocity.y);
+        } else {
+            ball.position.y = brick.y + brick.height + ballRadius;
+            ball.velocity.y = Math.abs(ball.velocity.y);
         }
     }
 
