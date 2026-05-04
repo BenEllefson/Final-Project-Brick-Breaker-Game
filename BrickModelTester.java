@@ -115,9 +115,7 @@ public class BrickModelTester {
         assertEquals("Initial state is START", model.getGameState(), BrickGameModel.GameState.START);
 
         // Simulate clearing all bricks
-        while (!model.getBricks().isEmpty()) {
-            model.getBricks().remove(model.getBricks().size() - 1);
-        }
+        model.clearBricks();
 
         model.checkLevelComplete();
         assertEquals("Level complete when all bricks removed", model.getGameState(), BrickGameModel.GameState.LEVEL_COMPLETE);
@@ -166,7 +164,15 @@ public class BrickModelTester {
 
     // Helper Methods
     private static void assertEquals(String testName, Object actual, Object expected) {
-        if (actual != null && actual.equals(expected)) {
+             boolean valuesMatch;
+
+        if (actual instanceof Number && expected instanceof Number) {
+            valuesMatch = Double.compare(((Number) actual).doubleValue(), ((Number) expected).doubleValue()) == 0;
+        } else {
+            valuesMatch = actual == null ? expected == null : actual.equals(expected);
+        }
+
+        if (valuesMatch) {
             System.out.println("  PASS: " + testName);
             testsPassed++;
         } else {
