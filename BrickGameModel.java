@@ -143,6 +143,10 @@ public class BrickGameModel {
             gameState = GameState.LEVEL_COMPLETE;
         }
     }
+    
+    public void clearBricks() {
+        bricks.clear();
+    }
 
     public int getWindowWidth() {
         return windowWidth;
