@@ -9,6 +9,7 @@ public class BrickModelTester {
         testBallLaunchBehavior();
         testBallMovement();
         testBrickInteraction();
+        testCollisionBehavior();
         testLevelCompletion();
         testLifeLoss();
         testGameOver();
@@ -27,9 +28,8 @@ public class BrickModelTester {
         BrickGameModel.Ball ball = model.getBall();
         BrickGameModel.Paddle paddle = model.getPaddle();
         
-        // Ball should be on paddle (approximately)
-        double distToPaddle = Math.abs(ball.position.y - (model.getWindowHeight() - 45));
-        assertTrue("Ball positioned on paddle (y-distance <= 5)", distToPaddle <= 5);
+        // Ball should be resting on the paddle
+        assertEquals("Ball positioned on paddle", ball.position.y, model.getPaddleY() - model.getBallRadius());
         
         // Ball should not be moving
         assertEquals("Ball velocity X is 0 before launch", ball.velocity.x, 0);
@@ -78,14 +78,6 @@ public class BrickModelTester {
 
         System.out.println("  PASS: Ball moved from (" + initialX + ", " + initialY + ") to (" + newX + ", " + newY + ")");
 
-        // Test wall bounce (top)
-        model = new BrickGameModel();
-        ball = model.getBall();
-        ball.position.y = 5;
-        ball.velocity.y = -3;
-        model.launchBall();
-        System.out.println("  NOTE: Wall collision detection not yet fully implemented in model");
-
         System.out.println();
     }
 
@@ -108,8 +100,42 @@ public class BrickModelTester {
         System.out.println();
     }
 
+    private static void testCollisionBehavior() {
+        System.out.println("Test Suite 5: Collision Behavior");
+        BrickGameModel model = new BrickGameModel();
+        BrickGameModel.Ball ball = model.getBall();
+
+        model.launchBall();
+        ball.position.y = model.getBallRadius() + 1;
+        ball.velocity.x = 0;
+        ball.velocity.y = -4;
+
+        model.updateGame();
+
+        assertEquals("Ball bounces down from top wall", ball.velocity.y, 4);
+        assertEquals("Ball stays inside top boundary", ball.position.y, model.getBallRadius());
+
+        model = new BrickGameModel();
+        ball = model.getBall();
+        BrickGameModel.Brick firstBrick = model.getBricks().get(0);
+        int initialBrickCount = model.getBricks().size();
+
+        model.launchBall();
+        ball.position.x = firstBrick.x + firstBrick.width / 2.0;
+        ball.position.y = firstBrick.y - model.getBallRadius() - 1;
+        ball.velocity.x = 0;
+        ball.velocity.y = 4;
+
+        model.updateGame();
+
+        assertEquals("Brick removed after ball collision", model.getBricks().size(), initialBrickCount - 1);
+        assertEquals("Ball bounces upward after brick collision", ball.velocity.y, -4);
+
+        System.out.println();
+    }
+
     private static void testLevelCompletion() {
-        System.out.println("Test Suite 5: Level Completion");
+        System.out.println("Test Suite 6: Level Completion");
         BrickGameModel model = new BrickGameModel();
 
         assertEquals("Initial state is START", model.getGameState(), BrickGameModel.GameState.START);
@@ -124,7 +150,7 @@ public class BrickModelTester {
     }
 
     private static void testLifeLoss() {
-        System.out.println("Test Suite 6: Life Loss");
+        System.out.println("Test Suite 7: Life Loss");
         BrickGameModel model = new BrickGameModel();
 
         int initialLives = model.getLives();
@@ -148,7 +174,7 @@ public class BrickModelTester {
     }
 
     private static void testGameOver() {
-        System.out.println("Test Suite 7: Game Over");
+        System.out.println("Test Suite 8: Game Over");
         BrickGameModel model = new BrickGameModel();
 
         // Lose all lives
@@ -164,7 +190,7 @@ public class BrickModelTester {
 
     // Helper Methods
     private static void assertEquals(String testName, Object actual, Object expected) {
-             boolean valuesMatch;
+        boolean valuesMatch;
 
         if (actual instanceof Number && expected instanceof Number) {
             valuesMatch = Double.compare(((Number) actual).doubleValue(), ((Number) expected).doubleValue()) == 0;
