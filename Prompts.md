@@ -104,3 +104,5 @@ Debugging prompt:
 The ball is not bouncing off of the brick when a collision is supposed to happen and flying through the brick not registering, likely due to the models collision handling process. Reinforce those ideas and have a test in the Model tester reflect those changes.
 
 The AI then added many lines of code centered around the collision functions and private voids in the gameModel. It also added a testcollisionbehavior() to the model tester so that could be monitored
+
+This did end up fixing the issue in the game model, adding more reinforcement to the collision physics in the game made it through the play test and the ball succesfully bounced off the bricks + walls.
