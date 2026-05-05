@@ -113,3 +113,8 @@ Slightly increase the speed of both the ball and the paddle to make gameplay fee
 - Do NOT modify GameView
 
 This mostly just changed the values for ball velocity and and paddle velocity in the GameModel and did not affect much else. I did this to make the game seem a little bit more responisve and challenging. When the paddle and ball are moving slower it made the game seem a little more boring.
+
+Test-Extension prompt:
+Add a test to BrickModelTester.java that detects the correct collision behavior when the ball hits a brick, making sure that the ball bounces off and that the brick is removed. 
+
+The AI added a test called testcollisionbehavior() which ensured that both of those happened and when running the test through the terminal it showed a PASS for both of them. The AI also increased the scope of the test to include the top and side walls of the game which was helpful and left in the code as well. 
