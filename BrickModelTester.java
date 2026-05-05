@@ -130,6 +130,19 @@ public class BrickModelTester {
 
         assertEquals("Brick removed after ball collision", model.getBricks().size(), initialBrickCount - 1);
         assertEquals("Ball bounces upward after brick collision", ball.velocity.y, -4);
+        assertEquals("Ball moves outside brick after collision", ball.position.y, firstBrick.y - model.getBallRadius());
+
+        model = new BrickGameModel();
+        ball = model.getBall();
+        initialBrickCount = model.getBricks().size();
+
+        model.launchBall();
+        for (int i = 0; i < 200 && model.getBricks().size() == initialBrickCount; i++) {
+            model.updateGame();
+        }
+
+        assertEquals("Launched ball removes a brick during normal play", model.getBricks().size(), initialBrickCount - 1);
+        assertTrue("Launched ball bounces back after hitting a brick", ball.velocity.y > 0);
 
         System.out.println();
     }
