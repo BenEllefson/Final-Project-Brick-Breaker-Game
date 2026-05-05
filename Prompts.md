@@ -106,3 +106,10 @@ The ball is not bouncing off of the brick when a collision is supposed to happen
 The AI then added many lines of code centered around the collision functions and private voids in the gameModel. It also added a testcollisionbehavior() to the model tester so that could be monitored
 
 This did end up fixing the issue in the game model, adding more reinforcement to the collision physics in the game made it through the play test and the ball succesfully bounced off the bricks + walls.
+
+Scoped-Edit Prompt:
+Slightly increase the speed of both the ball and the paddle to make gameplay feel more responsive. 
+- You may modify: GameModel and GameController
+- Do NOT modify GameView
+
+This mostly just changed the values for ball velocity and and paddle velocity in the GameModel and did not affect much else. I did this to make the game seem a little bit more responisve and challenging. When the paddle and ball are moving slower it made the game seem a little more boring.
