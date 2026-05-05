@@ -120,7 +120,7 @@ public class BrickGameModel {
 
             double paddleCenter = paddle.x + paddle.width / 2.0;
             double hitOffset = (ball.position.x - paddleCenter) / (paddle.width / 2.0);
-            ball.velocity.x = hitOffset * 5;
+            ball.velocity.x = hitOffset * 6;
         }
     }
 
@@ -211,8 +211,8 @@ public class BrickGameModel {
 
     public void launchBall() {
         if (gameState == GameState.START) {
-            ball.velocity.x = 3;
-            ball.velocity.y = -4;
+            ball.velocity.x = 4;
+            ball.velocity.y = -5;
             gameState = GameState.PLAYING;
         }
     }
