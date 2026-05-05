@@ -55,10 +55,10 @@ public class BrickGameController {
     private void processInput() {
         if (model.getGameState() == BrickGameModel.GameState.PLAYING) {
             if (leftPressed) {
-                model.movePaddle(-5);
+                model.movePaddle(-7);
             }
             if (rightPressed) {
-                model.movePaddle(5);
+                model.movePaddle(7);
             }
         }
     }
